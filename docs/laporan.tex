@@ -1,0 +1,143 @@
+﻿\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{graphicspath}
+\graphicspath{{../assets/}}
+\usepackage{times}
+\usepackage{setspace}
+\usepackage{ragged2e}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\setstretch{1.5}
+\justifying
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\lstset{basicstyle=\footnotesize\ttfamily, breaklines=true, frame=single, numbers=left, numberstyle=\tiny, keywordstyle=\color{blue}, commentstyle=\color{gray}, showstringspaces=false, columns=fullflexible}
+\titleformat{\section}{\centering\normalfont\fontsize{14}{18}\selectfont\bfseries}{BAB \thesection}{0.4cm}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{16}\selectfont\bfseries}{\thesubsection.}{0.4cm}{}
+\titlespacing*{\section}{0pt}{0pt}{0.8cm}
+\titlespacing*{\subsection}{0pt}{0.4cm}{0.3cm}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[C]{\fontsize{12}{14}\selectfont\thepage}
+\setcounter{page}{1}
+\begin{document}
+\thispagestyle{empty}
+\begin{center}
+{\fontsize{14}{21}\selectfont\bfseries UNIVERSITAS GUNADARMA\par}
+\vspace{0.3cm}
+{\fontsize{14}{21}\selectfont\bfseries FAKULTAS TEKNOLOGI INDUSTRI\par}
+\vspace{1.1cm}
+\includegraphics[width=6cm]{logo-gunadarma.png}\par
+\vspace{1.1cm}
+{\fontsize{14}{21}\selectfont\bfseries LAPORAN\par}
+\vspace{0.4cm}
+{\fontsize{14}{21}\selectfont\bfseries PENGISIAN WARNA PADA OBJEK GRAFIS\par}
+\vspace{0.2cm}
+{\fontsize{14}{21}\selectfont\bfseries BOUNDARY FILL DAN FLOOD FILL\par}
+\vspace{1.5cm}
+{\fontsize{14}{21}\selectfont\bfseries DISUSUN OLEH:\par}
+\vspace{0.4cm}
+\begin{tabular}{|rl|}
+\hline
+\rule{0pt}{0.9cm} 1. & Afwan Apriansyah (50422111) \\
+2. & Nama Anggota Dua (NPM) \\
+3. & Nama Anggota Tiga (NPM) \rule[-0.3cm]{0pt}{0.9cm} \\
+\hline
+\end{tabular}
+\end{center}
+\vfill
+\begin{center}
+{\fontsize{14}{21}\selectfont\bfseries INFORMATIKA\par}
+{\fontsize{14}{21}\selectfont\bfseries PTA 2026/2027\par}
+\end{center}
+\clearpage
+\thispagestyle{empty}
+\begin{center}
+{\fontsize{14}{18}\selectfont\bfseries DAFTAR ISI\par}
+\end{center}
+\vspace{0.5cm}
+\tableofcontents
+\clearpage
+\section{PENDAHULUAN}
+Tugas ini membahas materi nomor 6, yaitu pengisian warna pada objek grafis. Contoh penerapan pada gambar tugas adalah aplikasi mewarnai sederhana, pengisian area peta, atau coloring game. Kami membangun program Python dengan Tkinter tanpa library tambahan agar mudah dijalankan di komputer lab.
+\subsection{Tujuan}
+Tujuan tugas ini ada empat poin. Pertama, menjalankan program pewarnaan secara interaktif. Kedua, menunjukkan algoritma Boundary Fill dan Flood Fill secara benar. Ketiga, menjelaskan rumus dan tahapan algoritma dengan bahasa sederhana. Keempat, menampilkan alur dari input ke proses algoritma sampai output grafis.
+\subsection{Ruang Lingkup}
+Program memakai grid 40 x 26 sel. Ada tiga peta demo, yaitu rooms, circle, dan leak. Pengguna memilih algoritma, konektivitas 4 atau 8 arah, warna, dan kecepatan animasi. Output berupa area berwarna plus statistik jumlah piksel, waktu, dan ukuran stack.
+\section{DASAR TEORI}
+\subsection{Boundary Fill}
+Boundary Fill mulai dari titik seed lalu meluas selama piksel bukan warna batas dan bukan warna isi. Syarat berhentinya jelas, yaitu bertemu garis batas atau area yang sudah diisi. Versi 4 arah hanya bergerak atas, bawah, kiri, dan kanan. Versi 8 arah menambah arah diagonal sehingga dapat melewati celah diagonal.
+\subsection{Flood Fill}
+Flood Fill mulai dari titik seed lalu mengganti semua piksel yang punya warna target yang sama dan saling terhubung. Bedanya dengan Boundary Fill adalah Flood Fill tidak mencari warna batas, tetapi mencari warna awal yang sama. Contoh sederhana, klik area putih maka semua putih yang terhubung berubah jadi merah. Jika klik garis hitam maka tidak terjadi apa apa karena garis hitam dianggap batas.
+\subsection{Varian Scanline}
+Scanline Flood Fill mengisi satu baris horizontal penuh dulu, lalu antre baris atas dan bawah. Cara ini lebih hemat langkah untuk area lebar karena tidak menumpuk semua piksel satu per satu. Kami pakai varian ini sebagai pembanding di laporan dan demo.
+\section{TAHAPAN ALGORITMA}
+\subsection{Langkah Boundary Fill}
+Langkahnya sebagai berikut. Pertama, baca posisi klik sebagai seed dan warna isi pilihan. Kedua, jika seed di luar grid, di atas batas, atau sudah berwarna isi, maka berhenti. Ketiga, dorong seed ke stack dan tandai sudah dilihat. Keempat, ambil satu titik dari stack, catat sebagai visited, lalu lewati jika itu batas atau sudah diisi. Kelima, warnai titik valid lalu dorong semua tetangganya yang belum dilihat. Keenam, ulangi sampai stack kosong. Kompleksitas waktu sebanding dengan jumlah piksel yang dikunjungi.
+\subsection{Langkah Flood Fill}
+Langkahnya mirip, tetapi syaratnya memakai warna target. Pertama, simpan warna awal pada seed sebagai target. Kedua, jika target adalah batas atau sama dengan warna isi, maka berhenti. Ketiga, dorong seed ke stack. Keempat, ambil satu titik, lewati jika warnanya bukan target. Kelima, warnai titik itu lalu dorong tetangganya. Keenam, ulangi sampai stack kosong. Hasilnya adalah satu daerah terhubung yang berubah warna secara penuh.
+\subsection{4 Arah lawan 8 Arah}
+Konektivitas 4 arah aman untuk peta dengan celah diagonal kecil karena diagonal tidak ikut terisi. Konektivitas 8 arah lebih agresif dan dapat bocor lewat sudut yang hanya bersentuhan diagonal. Peta leak pada demo sengaja diberi satu lubang untuk menunjukkan kasus bocor ini.
+\section{ALUR PROGRAM}
+Alur program mengikuti perintah pada gambar tugas, yaitu dari input ke proses algoritma sampai output grafis.
+\begin{enumerate}
+\item Input pengguna berupa klik mouse, pilihan peta, pilihan algoritma, konektivitas, warna, dan kecepatan animasi.
+\item Proses algoritma memakai stack eksplisit tanpa rekursi agar aman untuk area besar.
+\item Setiap titik yang diambil dicatat pada trace untuk animasi langkah demi langkah.
+\item Output grafis berupa grid berwarna pada kanvas Tkinter.
+\item Output teks berupa statistik filled, visited, ukuran stack maksimum, waktu dalam ms, titik awal, dan warna.
+\end{enumerate}
+Interaksi minimal terpenuhi lewat tombol mouse, radio button, slider animasi, tombol Reset, Undo, Play trace, Stop, dan Auto fill 3 spots. Fitur Undo menyimpan sampai 20 status grid terakhir.
+\section{SOURCE CODE BAGIAN ALGORITMA}
+Potongan berikut adalah inti Flood Fill pada file src/fill\_algorithms.py. Komentar pada kode memakai bahasa Inggris sesuai aturan workspace.
+\begin{lstlisting}[language=Python]
+def flood_fill(grid, sx, sy, fill_color, connectivity=4, trace=None):
+    target = grid[sy][sx]
+    if target == BOUNDARY or target == fill_color:
+        return stats
+    stack = [(sx, sy)]
+    seen = set([(sx, sy)])
+    while stack:
+        x, y = stack.pop()
+        if grid[y][x] != target:
+            continue
+        grid[y][x] = fill_color
+        for nx, ny in pick(x, y):
+            if (nx, ny) not in seen:
+                seen.add((nx, ny))
+                stack.append((nx, ny))
+\end{lstlisting}
+Potongan Boundary Fill memakai pola yang sama, tetapi syarat berhenti adalah warna batas.
+\begin{lstlisting}[language=Python]
+if cur == boundary_color or cur == fill_color:
+    continue
+grid[y][x] = fill_color
+\end{lstlisting}
+File lengkap ada pada src/fill\_algorithms.py, peta demo pada src/maps.py, dan UI pada src/app.py.
+\section{HASIL UJI}
+Kami menjalankan 5 unit test dengan perintah python -m unittest discover -s tests -v. Semua lolos.
+\begin{center}
+\begin{tabular}{|c|l|c|}
+\hline
+No & Kasus uji & Hasil \\
+\hline
+1 & Flood fill mewarnai area dalam & Lolos \\
+\hline
+2 & Boundary fill tidak menimpa dinding & Lolos \\
+\hline
+3 & Scanline dan flood mengisi area sama & Lolos \\
+\hline
+4 & Klik pada dinding tidak mengubah grid & Lolos \\
+\hline
+5 & Semua peta demo berhasil dimuat & Lolos \\
+\hline
+\end{tabular}
+\end{center}
+Untuk demo lisan, pakai urutan ini. Pertama, buka peta rooms dan klik tiap ruang dengan warna beda. Kedua, ganti konektivitas dari 4 ke 8 lalu bandingkan hasilnya. Ketiga, buka peta leak dan klik dalam kotak untuk menunjukkan bocor lewat lubang. Keempat, tekan Auto fill 3 spots untuk tangkapan layar laporan. Kelima, tampilkan statistik waktu dan jumlah piksel sebagai bukti proses algoritma.
+\section{PENUTUP}
+Program ini memenuhi tujuh ketentuan pada gambar tugas. Ada program yang dapat dijalankan, ada dua algoritma utama plus satu varian, ada penjelasan rumus dan tahapan, ada source code, ada alur input ke output, ada interaksi pengguna, dan ada laporan untuk presentasi. Saran pengembangan adalah menambah format gambar PNG, mode ember cat bebas, dan perekam GIF untuk animasi trace.
+\end{document}
